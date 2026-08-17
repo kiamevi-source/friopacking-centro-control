@@ -515,7 +515,7 @@
 
   var S={user:null,role:'ingeniero',screen:'mi-dia',plano:null,tab:'info',cliente:null,proyecto:'chincha2',
     timers:{'RF-PID-204':4360,'RF-EVAP-118':1720},active:null,iv:null,form:null,zoom:1,
-    fSpe:'',fResp:'',fProj:'',gProj:'',gSpe:'',commentMode:false,pending:null,replyTo:null,cotiz:null,ctab:'resumen',ticket:null,load:{AR:142,DC:88,MP:97,LM:55}};
+    fSpe:'',fResp:'',fProj:'',gProj:'',gSpe:'',commentMode:false,pending:null,replyTo:null,cotiz:null,ctab:'resumen',ticket:null,planoFiles:{},load:{AR:142,DC:88,MP:97,LM:55}};
 
   function myPlanos(){return S.role==='gerente'?planos:planos.filter(function(p){return p.resp===S.user.ini})}
   function planosOf(ini,spe,proy){return planos.filter(function(p){return p.resp===ini&&(!spe||p.spe===spe)&&(!proy||p.proy===proy)})}
@@ -913,11 +913,24 @@
   function toggleTimer(id){if(S.active===id){S.active=null;toast('Cronómetro en pausa · '+id)}else{S.active=id;ensureTick();toast('Cronómetro corriendo · '+id)}refreshTimerBtns()}
 
   // ---- DETAIL (full page) ----
-  function openDetail(id,tab){var p=planos.filter(function(x){return x.id===id})[0];if(!p)return;S.plano=id;S.tab=tab||'info';S.pending=null;S.commentMode=false;S.replyTo=null;renderDetail();$('#detailPage').classList.add('open')}
+  function openDetail(id,tab){var p=planos.filter(function(x){return x.id===id})[0];if(!p)return;S.plano=id;S.tab=tab||'info';S.pending=null;S.commentMode=false;S.replyTo=null;renderDetail();$('#detailPage').classList.add('open');if(sb&&S.planoFiles[id]===undefined){fetchPlanoFile(id,function(){if(S.plano===id)renderDetail()})}}
   function closeDetail(){S.plano=null;$('#detailPage').classList.remove('open')}
   function sheetSVG(){return '<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet"><g stroke="var(--blue)" stroke-width="1.6" fill="none" opacity="0.75"><rect x="40" y="60" width="90" height="60" rx="3"/><rect x="250" y="150" width="80" height="70" rx="3"/><circle cx="180" cy="90" r="16"/><path d="M130 90h34M196 90h54v60M120 175h130M85 120v55h35M300 150v-40h-60"/></g></svg>'}
   function commentPins(p){var cs=p.comments||[];var n=0;var out=cs.map(function(c){var cls=c.resolved?'res':(c.by==='RG'?'open':'note');n++;return '<div class="pin '+cls+'" style="left:'+c.x+'%;top:'+c.y+'%"><span>'+(c.resolved?'✓':n)+'</span></div>'}).join('');if(S.pending)out+='<div class="pin note" style="left:'+S.pending.x+'%;top:'+S.pending.y+'%;opacity:.65;border-style:dashed"><span>+</span></div>';return out}
-  function pinsAndBlock(p){return commentPins(p)+'<div class="titleblock"><div>PROYECTO: '+projOf(p.proy).nm+'</div><div>ESPECIALIDAD: '+p.spe+'</div><div>ESC 1:50 · A1</div><div>'+p.id+' · '+(p.rev||'Rev. A')+'</div></div>'}
+  function tb(p){return '<div class="titleblock"><div>PROYECTO: '+projOf(p.proy).nm+'</div><div>ESPECIALIDAD: '+p.spe+'</div><div>ESC 1:50 · A1</div><div>'+p.id+' · '+(p.rev||'Rev. A')+'</div></div>'}
+  function pinsAndBlock(p){return commentPins(p)+tb(p)}
+  function fetchPlanoFile(pid,cb){if(!sb){cb&&cb(null);return}sb.from('plano_versiones').select('url,tipo,filename').eq('plano_id',pid).order('created_at',{ascending:false}).limit(1).then(function(r){var v=(r.data&&r.data[0])||null;S.planoFiles[pid]=v;cb&&cb(v)})}
+  function sheetContent(p,full){
+    var pf=S.planoFiles[p.id];
+    if(pf&&/pdf/i.test(pf.tipo||'')){
+      var pe=full?'auto':'none';
+      return '<iframe src="'+pf.url+'#toolbar=0&navpanes=0&view=FitH" style="position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;pointer-events:'+pe+'"></iframe>'+commentPins(p)+tb(p);
+    }
+    if(pf){
+      return '<div class="gb"></div><div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:12.5px;padding:24px"><div><svg class="icn" viewBox="0 0 24 24" style="width:26px;height:26px;color:var(--faint);margin-bottom:6px"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg><br><b class="b">'+(pf.tipo||'archivo').toUpperCase()+'</b> subido — sin vista previa en el navegador.<br>Descárgalo desde la pestaña <b class="b">Versiones</b> para abrirlo en AutoCAD/Revit.</div></div>'+tb(p);
+    }
+    return '<div class="gb"></div>'+sheetSVG()+pinsAndBlock(p);
+  }
   function renderComentarios(p){
     var cs=p.comments||[];
     var list=cs.map(function(c,i){
@@ -971,7 +984,7 @@
       '<div class="dp-top"><button class="iconbtn" id="soClose"><svg class="icn" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div><div class="cd">'+p.id+' · '+(p.rev||'Rev. A')+'</div><h3>'+p.ti+'</h3></div><div class="acts">'+foot+'</div></div>'+
       '<div class="dp-body">'+
         '<div class="viewer"><div class="vtools"><div class="vtool" data-full title="Pantalla completa"><svg class="icn sm" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></div><button class="btn'+(S.commentMode?' pri':'')+'" id="startComment" style="padding:6px 11px"><svg class="icn sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> '+(S.role==='gerente'?'Observar':'Comentar')+'</button><span class="chip" style="margin-left:auto"><span class="dot crit"></span>'+cop+' abiertas</span><span class="chip"><span class="dot good"></span>'+crs+' resueltas</span></div>'+
-        '<div class="sheet" data-full style="cursor:'+(S.commentMode?'crosshair':'zoom-in')+'" title="'+(S.commentMode?'Toca donde quieras comentar':'Abrir a pantalla completa')+'"><div class="gb"></div>'+sheetSVG()+pinsAndBlock(p)+'</div>'+
+        '<div class="sheet" data-full style="cursor:'+(S.commentMode?'crosshair':'zoom-in')+'" title="'+(S.commentMode?'Toca donde quieras comentar':'Abrir a pantalla completa')+'">'+sheetContent(p,false)+'</div>'+
         '<div style="font-size:11px;color:var(--muted);text-align:center">'+(S.commentMode?'Toca el plano donde quieras dejar tu comentario':'Toca el plano para ampliarlo · PDF · DWG · RVT')+'</div></div>'+
         '<div class="dside"><div class="rolehint">'+hint+'</div><div class="tabs">'+tabs+'</div>'+body+'</div>'+
       '</div>';
@@ -1002,7 +1015,8 @@
         var rev='Rev. '+String.fromCharCode(65+(cc.count||0));
         sb.from('plano_versiones').insert({plano_id:pid,rev:rev,filename:file.name,path:path,url:url,tipo:ext,uploaded_by:(S.user&&S.user.ini)||null}).then(function(ins){
           if(ins.error){toast('Subido, pero no se registró: '+ins.error.message);return}
-          toast(file.name+' subido ✓ ('+rev+')');loadVersions(pid);
+          S.planoFiles[pid]={url:url,tipo:ext,filename:file.name};
+          toast(file.name+' subido ✓ ('+rev+')');renderDetail();
         });
       });
     });
@@ -1010,7 +1024,7 @@
 
   function openFull(){var p=planos.filter(function(x){return x.id===S.plano})[0];if(!p)return;S.zoom=1;
     var acts=S.role==='gerente'?'<button class="btn pri" data-act="aprobar">Aprobar</button><button class="btn" data-act="rechazar">Rechazar</button>':((p.est==='curso'||p.est==='backlog')?'<button class="btn pri" data-act="send">Enviar a revisión</button>':'');
-    $('#fullRoot').innerHTML='<div class="full-top"><div><div class="cd">'+p.id+' · '+(p.rev||'Rev. A')+'</div><h3>'+p.ti+'</h3></div><div class="zc"><button class="btn" data-zoom="out">−</button><button class="btn" id="zlbl" data-zoom="reset">100%</button><button class="btn" data-zoom="in">+</button>'+acts+'<button class="btn gho" id="fullClose"><svg class="icn sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div><div class="full-canvas"><div class="fullsheet" id="fullsheet"><div class="gb"></div>'+sheetSVG()+pinsAndBlock(p)+'</div></div>';
+    $('#fullRoot').innerHTML='<div class="full-top"><div><div class="cd">'+p.id+' · '+(p.rev||'Rev. A')+'</div><h3>'+p.ti+'</h3></div><div class="zc"><button class="btn" data-zoom="out">−</button><button class="btn" id="zlbl" data-zoom="reset">100%</button><button class="btn" data-zoom="in">+</button>'+acts+'<button class="btn gho" id="fullClose"><svg class="icn sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div><div class="full-canvas"><div class="fullsheet" id="fullsheet">'+sheetContent(p,true)+'</div></div>';
     $('#fullScrim').classList.add('open');
   }
   function closeFull(){$('#fullScrim').classList.remove('open')}
