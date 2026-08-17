@@ -417,9 +417,13 @@
 
 <div class="toasts" id="toasts"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 (function(){
   "use strict";
+  var SB_URL='https://voskkxbispzjgpxahzbr.supabase.co';
+  var SB_KEY='sb_publishable_yJqunZERFVw1UqucFRcpzw_CNLNth0d';
+  var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY):null;
   var $=function(s,r){return (r||document).querySelector(s)};
   var content=$('#content'), sidebar=$('#sidebar');
 
@@ -955,7 +959,8 @@
         '</div>':'')+
         '<div class="info-sec"><div class="t">Cronómetro del plano</div><div class="timerbox"><div style="display:flex;align-items:center;gap:10px"><div class="mono" data-timer="'+p.id+'" style="font-size:24px;font-weight:740">'+fmt(S.timers[p.id])+'</div><button class="btn pri" data-timerbtn="'+p.id+'" style="margin-left:auto">'+(S.active===p.id?'⏸ Pausar':'▶ Iniciar')+'</button></div><div style="font-size:11px;color:var(--ink-2);margin-top:6px">Empieza y pausa cuantas veces necesites — la pausa no cierra el entregable.</div></div></div>';
     } else if(S.tab==='versiones'){
-      body='<div class="ver"><svg class="icn sm" viewBox="0 0 24 24" style="color:var(--teal-ink)"><path d="M6 2h9l5 5v15H6z"/></svg><div style="flex:1"><div class="vt">'+(p.rev||'Rev. A')+' — v3 <span class="chip warn" style="padding:0 6px;font-size:9px">actual</span></div><div class="vd">'+NAMES[p.resp]+' · hace 2 h · '+p.id+'.pdf</div></div></div><div class="ver" style="opacity:.7"><svg class="icn sm" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/></svg><div style="flex:1"><div class="vt">Rev. B — v2</div><div class="vd">02 ago · .dwg</div></div></div><div class="dropzone" data-upload style="margin-top:12px"><b>Subir nueva versión</b> — arrastra o haz clic<div style="margin-top:9px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><span class="fmt pdf">PDF</span><span class="fmt dwg">DWG · AutoCAD</span><span class="fmt rvt">RVT · Revit</span></div></div>';
+      body='<div id="verList" style="min-height:40px;color:var(--muted);font-size:12.5px">Cargando versiones…</div>'+
+        (sb?'<label class="dropzone" style="margin-top:12px;display:block;cursor:pointer"><input type="file" id="planoFile" accept=".pdf,.dwg,.dxf,.rvt,.rfa,.dwf" style="display:none"><b>Subir plano</b> — haz clic para elegir el archivo<div style="margin-top:9px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><span class="fmt pdf">PDF</span><span class="fmt dwg">DWG · AutoCAD</span><span class="fmt rvt">RVT · Revit</span></div></label>':'<div class="dropzone" style="margin-top:12px">Subida no disponible sin conexión a la base.</div>');
     } else if(S.tab==='comentarios'){
       body=renderComentarios(p);
     } else {
@@ -970,6 +975,37 @@
         '<div style="font-size:11px;color:var(--muted);text-align:center">'+(S.commentMode?'Toca el plano donde quieras dejar tu comentario':'Toca el plano para ampliarlo · PDF · DWG · RVT')+'</div></div>'+
         '<div class="dside"><div class="rolehint">'+hint+'</div><div class="tabs">'+tabs+'</div>'+body+'</div>'+
       '</div>';
+    if(S.tab==='versiones'&&sb)loadVersions(p.id);
+  }
+  function fileIcon(t){var c=t==='pdf'?'pdf':(/dwg|dxf|dwf/.test(t)?'dwg':(/rvt|rfa/.test(t)?'rvt':''));return '<span class="fmt '+c+'" style="text-transform:uppercase">'+(t||'archivo')+'</span>'}
+  function loadVersions(pid){
+    var el=document.getElementById('verList'); if(!el)return;
+    sb.from('plano_versiones').select('*').eq('plano_id',pid).order('created_at',{ascending:false}).then(function(r){
+      var el2=document.getElementById('verList'); if(!el2)return;
+      if(r.error){el2.innerHTML='<div style="color:var(--crit);font-size:12.5px">No se pudieron cargar las versiones.</div>';return}
+      var rows=r.data||[];
+      if(!rows.length){el2.innerHTML='<div style="font-size:12.5px;color:var(--muted)">Aún no hay archivos subidos. Sube el primero abajo.</div>';return}
+      el2.innerHTML=rows.map(function(v,i){
+        return '<div class="ver"><svg class="icn sm" viewBox="0 0 24 24" style="color:var(--teal-ink)"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg><div style="flex:1"><div class="vt">'+(v.rev||'')+' · '+v.filename+(i===0?' <span class="chip warn" style="padding:0 6px;font-size:9px">actual</span>':'')+'</div><div class="vd">'+(NAMES[v.uploaded_by]||v.uploaded_by||'—')+' · '+(v.created_at||'').slice(0,10)+' · '+fileIcon(v.tipo)+'</div></div><a class="btn gho" href="'+v.url+'" target="_blank" rel="noopener" style="padding:5px 10px;text-decoration:none"><svg class="icn sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></a></div>';
+      }).join('');
+    });
+  }
+  function uploadPlano(file){
+    if(!sb||!file){return}
+    var pid=S.plano;var ext=(file.name.split('.').pop()||'').toLowerCase();
+    var safe=file.name.replace(/[^\w.\- ]/g,'_');var path=pid+'/'+Date.now()+'-'+safe;
+    toast('Subiendo '+file.name+'…');
+    sb.storage.from('planos').upload(path,file,{cacheControl:'3600',upsert:false}).then(function(res){
+      if(res.error){toast('Error al subir: '+res.error.message);return}
+      var url=sb.storage.from('planos').getPublicUrl(path).data.publicUrl;
+      sb.from('plano_versiones').select('id',{count:'exact',head:true}).eq('plano_id',pid).then(function(cc){
+        var rev='Rev. '+String.fromCharCode(65+(cc.count||0));
+        sb.from('plano_versiones').insert({plano_id:pid,rev:rev,filename:file.name,path:path,url:url,tipo:ext,uploaded_by:(S.user&&S.user.ini)||null}).then(function(ins){
+          if(ins.error){toast('Subido, pero no se registró: '+ins.error.message);return}
+          toast(file.name+' subido ✓ ('+rev+')');loadVersions(pid);
+        });
+      });
+    });
   }
 
   function openFull(){var p=planos.filter(function(x){return x.id===S.plano})[0];if(!p)return;S.zoom=1;
@@ -1089,6 +1125,7 @@
     if(!t.closest('#userBtn')&&!t.closest('#userMenu'))$('#userMenu').classList.remove('open');
   });
   document.addEventListener('change',function(e){var t=e.target;
+    if(t.id==='planoFile'){if(t.files&&t.files[0])uploadPlano(t.files[0]);return}
     if(t.id==='fSpe'){S.fSpe=t.value;render()}
     else if(t.id==='fProj'){S.fProj=t.value;render()}
     else if(t.id==='fResp'){S.fResp=t.value;render()}
