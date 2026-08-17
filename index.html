@@ -960,7 +960,7 @@
         '<div class="info-sec"><div class="t">Cronómetro del plano</div><div class="timerbox"><div style="display:flex;align-items:center;gap:10px"><div class="mono" data-timer="'+p.id+'" style="font-size:24px;font-weight:740">'+fmt(S.timers[p.id])+'</div><button class="btn pri" data-timerbtn="'+p.id+'" style="margin-left:auto">'+(S.active===p.id?'⏸ Pausar':'▶ Iniciar')+'</button></div><div style="font-size:11px;color:var(--ink-2);margin-top:6px">Empieza y pausa cuantas veces necesites — la pausa no cierra el entregable.</div></div></div>';
     } else if(S.tab==='versiones'){
       body='<div id="verList" style="min-height:40px;color:var(--muted);font-size:12.5px">Cargando versiones…</div>'+
-        (sb?'<label class="dropzone" style="margin-top:12px;display:block;cursor:pointer"><input type="file" id="planoFile" accept=".pdf,.dwg,.dxf,.rvt,.rfa,.dwf" style="display:none"><b>Subir plano</b> — haz clic para elegir el archivo<div style="margin-top:9px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><span class="fmt pdf">PDF</span><span class="fmt dwg">DWG · AutoCAD</span><span class="fmt rvt">RVT · Revit</span></div></label>':'<div class="dropzone" style="margin-top:12px">Subida no disponible sin conexión a la base.</div>');
+        (sb?'<label class="dropzone" id="planoDrop" style="margin-top:12px;display:block;cursor:pointer"><input type="file" id="planoFile" accept=".pdf,.dwg,.dxf,.rvt,.rfa,.dwf" style="display:none"><svg class="icn" viewBox="0 0 24 24" style="width:22px;height:22px;color:var(--blue-ink);margin-bottom:4px"><path d="M12 16V4M7 9l5-5 5 5M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3"/></svg><div><b>Arrastra el archivo aquí</b> o haz clic para elegirlo</div><div style="margin-top:9px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap"><span class="fmt pdf">PDF</span><span class="fmt dwg">DWG · AutoCAD</span><span class="fmt rvt">RVT · Revit</span></div></label>':'<div class="dropzone" style="margin-top:12px">Subida no disponible aquí (abre la plataforma en friopacking-centro-control.vercel.app).</div>');
     } else if(S.tab==='comentarios'){
       body=renderComentarios(p);
     } else {
@@ -1124,6 +1124,9 @@
     var cmd=t.closest('[data-cmd]'); if(cmd){runCmd(cmd.getAttribute('data-cmd'),cmd.getAttribute('data-arg'));return}
     if(!t.closest('#userBtn')&&!t.closest('#userMenu'))$('#userMenu').classList.remove('open');
   });
+  document.addEventListener('dragover',function(e){var dz=e.target.closest&&e.target.closest('#planoDrop');if(dz){e.preventDefault();dz.style.borderColor='var(--blue)';dz.style.background='var(--blue-soft)'}});
+  document.addEventListener('dragleave',function(e){var dz=e.target.closest&&e.target.closest('#planoDrop');if(dz){dz.style.borderColor='';dz.style.background=''}});
+  document.addEventListener('drop',function(e){var dz=e.target.closest&&e.target.closest('#planoDrop');if(dz){e.preventDefault();dz.style.borderColor='';dz.style.background='';var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)uploadPlano(f)}});
   document.addEventListener('change',function(e){var t=e.target;
     if(t.id==='planoFile'){if(t.files&&t.files[0])uploadPlano(t.files[0]);return}
     if(t.id==='fSpe'){S.fSpe=t.value;render()}
