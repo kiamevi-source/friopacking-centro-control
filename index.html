@@ -424,6 +424,29 @@
   var SB_URL='https://voskkxbispzjgpxahzbr.supabase.co';
   var SB_KEY='sb_publishable_yJqunZERFVw1UqucFRcpzw_CNLNth0d';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY):null;
+  function sbW(q){if(q&&q.then)q.then(function(r){if(r&&r.error)console.warn('[sb write]',r.error.message)});return q}
+  function hydrate(){
+    if(!sb)return;
+    Promise.all([
+      sb.from('clientes').select('*'),sb.from('proyectos').select('*'),
+      sb.from('planos').select('*'),sb.from('plano_comentarios').select('*'),sb.from('plano_comentario_replies').select('*'),
+      sb.from('cotizaciones').select('*'),sb.from('cotizacion_partidas').select('*').order('orden'),sb.from('cotizacion_proveedores').select('*'),
+      sb.from('tickets').select('*')
+    ]).then(function(res){
+      var d=res.map(function(r){return r.data||[]});
+      var cl=d[0],pr=d[1],pl=d[2],pc=d[3],prep=d[4],co=d[5],cp=d[6],cpr=d[7],tk=d[8];
+      if(cl.length)clientes=cl.map(function(c){return {id:c.id,nm:c.nombre,av:c.avance}});
+      if(pr.length)proyectos=pr.map(function(p){return {id:p.id,nm:p.nombre,cli:p.cliente_id,salud:p.salud,estado:p.estado}});
+      var repBy={};prep.forEach(function(r){(repBy[r.comentario_id]=repBy[r.comentario_id]||[]).push({by:r.autor,text:r.texto})});
+      var comBy={};pc.forEach(function(c){(comBy[c.plano_id]=comBy[c.plano_id]||[]).push({dbid:c.id,x:+c.x,y:+c.y,by:c.autor,text:c.texto,resolved:c.resuelto,replies:repBy[c.id]||[]})});
+      if(pl.length)planos=pl.map(function(p){return {id:p.id,ti:p.titulo,spe:p.especialidad,est:p.estado,av:p.avance,resp:p.responsable,proy:p.proyecto_id,prio:p.prioridad,he:p.horas_est,hr:p.horas_real,rev:p.rev,dep:p.depende_de,blocks:p.bloquea_a,late:p.atrasado,apoyo:p.apoyo,comments:comBy[p.id]||[]}});
+      var partBy={};cp.forEach(function(r){(partBy[r.cotizacion_id]=partBy[r.cotizacion_id]||[]).push([r.categoria,r.descripcion,+r.cantidad,+r.precio_unitario])});
+      var provBy={};cpr.forEach(function(r){(provBy[r.cotizacion_id]=provBy[r.cotizacion_id]||[]).push([r.item,r.proveedor,r.fecha_pedido||'—',r.fecha_respuesta||'—',r.estado,r.dias_espera])});
+      if(co.length)cotizaciones=co.map(function(c){return {id:c.id,cliente:c.cliente,proy:c.proyecto,refrig:c.refrigerante,pais:c.pais,fase:c.fase,resultado:c.resultado,gg:+c.gg,margen:+c.margen,arq:{monto:+c.arq_monto,estado:c.arq_estado,arqui:c.arq_arquitecto,pais:c.pais,act:c.arq_actualizado,costoM2:c.arq_costo_m2},em:partBy[c.id]||[],prov:provBy[c.id]||[],ticket_id:c.ticket_id,fecha:c.fecha,venc:c.vence}});
+      if(tk.length)tickets=tk.map(function(t){return {id:t.id,cliente:t.cliente,proy:t.proyecto,tipo:t.tipo,estado:t.estado,refrig:t.refrigerante,by:t.creado_por,fecha:t.fecha,cotiz:t.cotizacion_id}});
+      if(S.user)render();
+    });
+  }
   var $=function(s,r){return (r||document).querySelector(s)};
   var content=$('#content'), sidebar=$('#sidebar');
 
@@ -510,7 +533,9 @@
     var n='COT-2026-0'+(30+cotizaciones.length);
     cotizaciones.push({id:n,cliente:tk.cliente,proy:tk.proy,refrig:tk.refrig,pais:'PE',fase:'solicitud',fecha:tk.fecha,venc:'—',
       arq:{monto:0,estado:'Pendiente',arqui:'—',pais:'PE',act:'—',costoM2:0},em:[],gg:0.08,margen:0.15,prov:[]});
-    tk.cotiz=n;return n;
+    tk.cotiz=n;
+    if(sb){sbW(sb.from('cotizaciones').insert({id:n,cliente:tk.cliente,proyecto:tk.proy,refrigerante:tk.refrig,pais:'PE',fase:'solicitud',gg:0.08,margen:0.15,ticket_id:tk.id}));sbW(sb.from('tickets').update({cotizacion_id:n}).eq('id',tk.id))}
+    return n;
   }
 
   var S={user:null,role:'ingeniero',screen:'mi-dia',plano:null,tab:'info',cliente:null,proyecto:'chincha2',
@@ -1089,13 +1114,14 @@
     if(t.closest('#tkClose')){closeTicket();return}
     if(t.closest('#newTicket')){openTicketModal();return}
     var tktp=t.closest('[data-tktipo]'); if(tktp){S.form.tipo=tktp.getAttribute('data-tktipo');[].forEach.call(document.querySelectorAll('#tkTipo button'),function(b){b.classList.toggle('pri',b===tktp)});$('#tkHint').textContent=S.form.tipo==='planos'?'Va primero a Arquitectura por los planos → revisión del cliente → recién pasa a presupuesto.':'Va directo a Presupuestos, sin pasar por planos.';return}
-    if(t.closest('#tkCreate')){var nt='TK-2026-0'+(40+tickets.length);var tk={id:nt,cliente:$('#tkCli').value,proy:($('#tkProy').value||'Nuevo proyecto'),tipo:S.form.tipo,estado:'nuevo',refrig:$('#tkRef').value,by:S.user.ini,fecha:'hoy',cotiz:null};tickets.push(tk);closeModal();render();toast('Ticket '+nt+' creado');return}
+    if(t.closest('#tkCreate')){var nt='TK-'+Date.now().toString().slice(-6);var tk={id:nt,cliente:$('#tkCli').value,proy:($('#tkProy').value||'Nuevo proyecto'),tipo:S.form.tipo,estado:'nuevo',refrig:$('#tkRef').value,by:S.user.ini,fecha:'hoy',cotiz:null};tickets.push(tk);if(sb)sbW(sb.from('tickets').insert({id:nt,cliente:tk.cliente,proyecto:tk.proy,tipo:tk.tipo,estado:'nuevo',refrigerante:tk.refrig,creado_por:tk.by}));closeModal();render();toast('Ticket '+nt+' creado');return}
     var tka=t.closest('[data-tkact]'); if(tka){var tk=tickets.filter(function(x){return x.id===S.ticket})[0];var a=tka.getAttribute('data-tkact');
       if(a==='a-arq'){tk.estado='arquitectura';toast(tk.id+' enviado a Arquitectura')}
       else if(a==='a-presup'){tk.estado='presupuesto';spawnCotiz(tk);toast(tk.id+' → cotización '+tk.cotiz+' creada para Presupuestos')}
       else if(a==='a-revision'){tk.estado='revision-cliente';toast('Enviado a revisión del cliente')}
       else if(a==='cliente-ok'){tk.estado='presupuesto';spawnCotiz(tk);toast('Cliente aprobó → cotización '+tk.cotiz+' creada')}
       else if(a==='cliente-no'){tk.estado='cerrado';toast('Ticket cerrado — cliente rechazó')}
+      if(sb)sbW(sb.from('tickets').update({estado:tk.estado}).eq('id',tk.id));
       renderTicket();return}
     var ocz=t.closest('[data-open-cotiz]'); if(ocz){closeTicket();openCotiz(ocz.getAttribute('data-open-cotiz'));return}
     if(t.closest('#cotClose')){closeCotiz();return}
@@ -1157,6 +1183,7 @@
   });
   $('#cmdInput').addEventListener('input',function(){renderCmds(this.value)});
 
+  hydrate();
   renderLoginUsers();
   $('#loginScrim').classList.add('open');
 })();
