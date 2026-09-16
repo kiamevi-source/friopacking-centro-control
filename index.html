@@ -108,6 +108,12 @@
   .btn.pri:hover{filter:brightness(1.08)}
   .btn.aur{background:var(--aurora);border-color:transparent;color:#fff}
   .btn.gho{background:transparent}
+  .btn.sm{padding:5px 10px;font-size:11.5px;gap:4px}
+  .btn.good{background:var(--good);border-color:transparent;color:#fff}
+  .btn.crit{background:transparent;border-color:var(--crit);color:var(--crit)}
+  .confirm-row{display:flex;align-items:center;gap:10px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+  .confirm-info{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+  .confirm-acts{display:flex;gap:6px;flex:none}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1)}
   .seg{display:inline-flex;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:3px}
   .seg button{border:none;background:transparent;color:var(--muted);font-size:12.5px;font-weight:560;padding:5px 12px;border-radius:7px}
@@ -310,6 +316,16 @@
   .pick.sel{border-color:var(--blue);background:var(--blue-soft)}
   .pick .ld{margin-left:auto;font-size:10.5px;color:var(--muted);text-align:right}
 
+  .bloque-row{margin-bottom:7px}
+  .bloque-chip{width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;cursor:pointer;text-align:left;border:1.5px solid color-mix(in srgb,var(--bc) 35%,transparent);background:color-mix(in srgb,var(--bc) 10%,var(--panel))}
+  .bloque-chip.open{border-color:var(--bc);background:color-mix(in srgb,var(--bc) 16%,var(--panel))}
+  .bloque-chip .bloque-cod{flex:none;font-size:10px;font-weight:800;letter-spacing:.02em;color:#fff;background:var(--bc);border-radius:6px;padding:3px 6px}
+  .bloque-chip .bloque-nm{flex:1;font-size:12.5px;font-weight:640;color:var(--ink);display:flex;flex-direction:column;gap:1px;min-width:0}
+  .bloque-chip .bloque-ct{font-size:10px;font-weight:520;color:var(--muted)}
+  .bloque-chip .bloque-unassigned{flex:none;font-size:10.5px;color:var(--muted);font-style:italic}
+  .bloque-chip svg{flex:none;color:var(--muted);transition:transform .15s}
+  .bloque-people{display:flex;flex-direction:column;gap:5px;margin:6px 0 2px 4px;padding-left:10px;border-left:2px solid var(--line)}
+
   .rolehint{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:560;color:var(--blue-ink);background:var(--blue-soft);border-radius:8px;padding:7px 10px;margin-bottom:12px}
 
   /* full-screen detail page */
@@ -337,9 +353,9 @@
   .fullsheet svg{position:absolute;inset:0;width:100%;height:100%}
 
   /* login */
-  .login-scrim{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:radial-gradient(70% 90% at 82% 8%,color-mix(in srgb,var(--teal-strong) 26%,transparent),transparent 60%),radial-gradient(60% 80% at 8% 0%,color-mix(in srgb,var(--blue) 22%,transparent),transparent 55%),var(--bg)}
+  .login-scrim{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;background:radial-gradient(70% 90% at 82% 8%,color-mix(in srgb,var(--teal-strong) 26%,transparent),transparent 60%),radial-gradient(60% 80% at 8% 0%,color-mix(in srgb,var(--blue) 22%,transparent),transparent 55%),var(--bg)}
   .login-scrim.open{display:flex}
-  .login{width:min(400px,94vw);background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-3);padding:26px}
+  .login{width:min(400px,94vw);background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh-3);padding:26px;margin:auto}
   .login .lg{display:flex;align-items:center;gap:10px}
   .login .lg img{width:32px;height:32px}
   .login .lg .nm{font-size:14px;font-weight:700;line-height:1.05}
@@ -350,7 +366,7 @@
   .login .demo .t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-bottom:8px}
   .login .du{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid var(--line);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--panel);width:100%;text-align:left}
   .login .du:hover{border-color:var(--blue);background:var(--blue-soft)}
-  .login .du .rl{margin-left:auto;font-size:10px;color:var(--muted)}
+  .login .du .rl{margin-left:auto;flex:none;font-size:10px;color:var(--muted)}
   .userchip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:4px 10px 4px 5px;cursor:pointer}
   .userchip:hover{border-color:var(--blue)}
   .userchip .nm{font-size:12px;font-weight:640;line-height:1.05}
@@ -473,7 +489,7 @@
       var cl=d[0],pr=d[1],pl=d[2],pc=d[3],prep=d[4],co=d[5],cp=d[6],cpr=d[7],tk=d[8],us=d[9];
       if(us.length){
         var pal=['#0FA896','#13277F','#8B5CF6','#EA580C','#2563EB','#0A7D71','#DB2777','#059669','#7C3AED','#D97706','#0891B2','#BE185D','#4F46E5','#16A34A'];
-        var roleOrder={comercial:0,ingeniero:1,presupuestador:2,gerente:3};
+        var roleOrder={gerente:0,comercial:1,ingeniero:2,presupuestador:3};
         us.sort(function(a,b){return (roleOrder[a.rol]-roleOrder[b.rol])||a.nombre.localeCompare(b.nombre)});
         users=us.map(function(u){return {ini:u.ini,nm:u.nombre,mail:u.email,role:u.rol,spe:u.especialidad}});
         team=us.filter(function(u){return u.rol==='ingeniero'}).map(function(u){return {ini:u.ini,nm:u.nombre,spe:u.especialidad,load:u.carga_pct||0}});
@@ -483,24 +499,120 @@
         renderLoginUsers();
       }
       if(cl.length)clientes=cl.map(function(c){return {id:c.id,nm:c.nombre,av:c.avance}});
-      if(pr.length)proyectos=pr.map(function(p){return {id:p.id,nm:p.nombre,cli:p.cliente_id,salud:p.salud,estado:p.estado}});
+      if(pr.length)proyectos=pr.map(function(p){return {id:p.id,nm:p.nombre,cli:p.cliente_id,salud:p.salud,estado:p.estado,creadoPor:p.creado_por||null}});
       var repBy={};prep.forEach(function(r){(repBy[r.comentario_id]=repBy[r.comentario_id]||[]).push({by:r.autor,text:r.texto})});
       var comBy={};pc.forEach(function(c){(comBy[c.plano_id]=comBy[c.plano_id]||[]).push({dbid:c.id,x:+c.x,y:+c.y,by:c.autor,text:c.texto,resolved:c.resuelto,replies:repBy[c.id]||[]})});
       if(pl.length)planos=pl.map(function(p){return {id:p.id,ti:p.titulo,spe:p.especialidad,est:p.estado,av:p.avance,resp:p.responsable,proy:p.proyecto_id,prio:p.prioridad,he:p.horas_est,hr:p.horas_real,rev:p.rev,dep:p.depende_de,blocks:p.bloquea_a,late:p.atrasado,apoyo:p.apoyo,comments:comBy[p.id]||[]}});
       var partBy={};cp.forEach(function(r){(partBy[r.cotizacion_id]=partBy[r.cotizacion_id]||[]).push([r.categoria,r.descripcion,+r.cantidad,+r.precio_unitario,r.id])});
       var provBy={};cpr.forEach(function(r){(provBy[r.cotizacion_id]=provBy[r.cotizacion_id]||[]).push([r.item,r.proveedor,r.fecha_pedido||'—',r.fecha_respuesta||'—',r.estado,r.dias_espera])});
       if(co.length)cotizaciones=co.map(function(c){return {id:c.id,cliente:c.cliente,proy:c.proyecto,refrig:c.refrigerante,pais:c.pais,fase:c.fase,resultado:c.resultado,gg:+c.gg,margen:+c.margen,arq:{monto:+c.arq_monto,estado:c.arq_estado,arqui:c.arq_arquitecto,pais:c.pais,act:c.arq_actualizado,costoM2:c.arq_costo_m2},em:partBy[c.id]||[],prov:provBy[c.id]||[],ticket_id:c.ticket_id,fecha:c.fecha,venc:c.vence}});
-      if(tk.length)tickets=tk.map(function(t){return {id:t.id,cliente:t.cliente,proy:t.proyecto,tipo:t.tipo,estado:t.estado,refrig:t.refrigerante,by:t.creado_por,fecha:t.fecha,cotiz:t.cotizacion_id}});
+      if(tk.length)tickets=tk.map(function(t){return {id:t.id,cliente:t.cliente,proy:t.proyecto,tipo:t.tipo,estado:t.estado,refrig:t.refrigerante,by:t.creado_por,fecha:t.fecha,cotiz:t.cotizacion_id,proyId:t.proyecto_id||null,bloque:t.bloque||null}});
       if(S.user)render();
     });
+    if(sb&&!S.rtOn){S.rtOn=true;try{sb.channel('tickets-live').on('postgres_changes',{event:'INSERT',schema:'public',table:'tickets'},function(payload){
+      var row=payload.new;if(!row||tickets.some(function(t){return t.id===row.id}))return;
+      var tkNew={id:row.id,cliente:row.cliente,proy:row.proyecto,tipo:row.tipo,estado:row.estado,refrig:row.refrigerante,by:row.creado_por,fecha:row.fecha,cotiz:row.cotizacion_id,proyId:row.proyecto_id||null,bloque:row.bloque||null,planoId:row.plano_id||null};
+      tickets.push(tkNew);
+      if(S.user&&S.role==='gerente'&&tkNew.tipo==='planos'){var proyC=proyectos.filter(function(p){return p.id===tkNew.proyId})[0];if(!tkNew.proyId||(proyC&&proyC.creadoPor===S.user.ini)){toast((NAMES[tkNew.by]||tkNew.by)+' confirmó un plano — ticket '+tkNew.id+' creado');if(S.screen==='dashboard'||S.screen==='tickets')render()}}
+    }).subscribe()}catch(e){}}
   }
   var $=function(s,r){return (r||document).querySelector(s)};
   var content=$('#content'), sidebar=$('#sidebar');
 
   var AV={AR:'#0FA896',LM:'#13277F',DC:'#8B5CF6',MP:'#0FA896',RG:'#13277F'};
   var NAMES={AR:'Ana Rivas',LM:'Luis Medrano',DC:'Diego Castro',MP:'María Ponce',RG:'R. Guerra'};
-  var SPE={REF:'Refrigeración',EST:'Estructuras',INST:'Instrumentación',CIV:'Civil',ARQ:'Arquitectura'};
-  var speClass={REF:'re',INST:'el',EST:'es',CIV:'ci',ARQ:'ci'};
+  var SPE={REF:'Refrigeración',EST:'Estructuras',INST:'Instrumentación',CIV:'Civil',ARQ:'Arquitectura',PP:'Paneles y Puertas'};
+  var speClass={REF:'re',INST:'el',EST:'es',CIV:'ci',ARQ:'ci',PP:'es'};
+  var BLOQUE_SPE={PA:'ARQ',PP:'PP',PC:'CIV',EM:'EST',PR:'REF',IE:'INST'};
+  var TEMPLATE_BLOQUES=[
+    {cod:'PA',nombre:'PLANOS ARQUITECTURA',items:[
+      ['A_01','LAYOUT FINAL'],['A_02','CORTES Y ELEVACIONES'],['A_03','PRESENTACION 3D PLANTA'],['A_04','DISTRIBUCION POR ETAPAS']
+    ]},
+    {cod:'PP',nombre:'PLANOS PANELES Y PUERTAS',items:[
+      ['P_01','DISTRIBUCION PANELES PARED'],['P_02','DISTRIBUCION PANELES TECHO'],['P_03','DETALLES DE INSTALACION PANELES'],
+      ['P_04','DISTRIBUCION DE PUERTAS Y CUADRO DE VANOS'],['P_05','DETALLES DE INSTALACION DE PUERTAS'],['P_06','PROTECCION DE PUERTAS'],
+      ['P_07','PLANO DE ACCESORIOS PARA PANELES'],['P_08','PLANO DE CORTINAS DE LAMA'],['P_09','PLANO UBICACIÓN VALVULAS ALIVIO PRESION'],
+      ['P_10','PLANO DE LONAS PARA TUNELES'],['P_11','PLANO DE PUERTAS DE LONA'],['P_12','DETALLE INTERIOR TUNEL CALIFORNIANO'],
+      ['P_13','DETALLE INTERIOR TUNEL INDIVIDUAL'],['P_14','DETALLE DE GASIFICADO']
+    ]},
+    {cod:'PC',nombre:'PLANOS CIVILES',items:[
+      ['C_01','UBICACIÓN DE SUMIDEROS Y DRENAJES'],['C_02','DISTRIBUCION SALA DE MAQUINAS'],['C_03','BASE COMPRESORES'],
+      ['C_04','BASE TANQUE DE BOMBEO'],['C_05','BASE TANQUE RECIBIDOR'],['C_06','BASE CONDENSADOR EVAPORATIVO'],
+      ['C_07','BASE EQUIPOS DE FREON'],['C_08','BASE TANQUE DE GLICOL'],['C_09','BASE TANQUE TERMOSIFON'],
+      ['C_10','BASE NIVELADOR HIDRAULICO'],['C_11','DETALLE DE ZOCALOS'],['C_12','AISLAMIENTO DE PISO CAMARA DE CONGELADO'],
+      ['C_13','BASE TABLERO ELECTRICO'],['C_14','DISTRIBUCION DE PUERTAS'],['C_15','DISTRIBUCION DE PUERTAS']
+    ]},
+    {cod:'EM',nombre:'ESTRUCTURAS METALICAS',items:[
+      ['EM_01','BASES DE EVAPORADOR PARA TUNEL'],['EM_02','SOPORTES DE EVAPORADORES'],['EM_02','SOPORTES DE UNIDADES CONDENSADORES'],
+      ['EM_03','SOPORTE DE TUBERIAS'],['EM_04','CORREAS PARA PANELES'],['EM_05','SOPORTE PARA PANELES DE TECHO'],
+      ['EM_06','3D ESTRUCTURAS'],['EM_07','SOPORTE DE PORT A COOL'],['EM_08','SOPORTE DE EOLICOS']
+    ]},
+    {cod:'PR',nombre:'PLANOS DE REFRIGERACION',items:[
+      ['R_01','ESQUEMA TECNICO AMONIACO'],['R_02','ESQUEMA TECNICO FREON'],['R_03','ESQUEMA TECNICO C02'],
+      ['R_04','RECORRIDO DE TUBERIAS DE REFRIGERACION'],['R_05','PLANO TUBERIAS DE DRENAJES'],['R_06','DETALLES DE INSTALACION DE VALVULAS'],
+      ['R_07','DISTRIBUCION DE EQUIPOS (PESOS Y MODELOS EQUIPOS)'],['R_08','SOPORTE DE TUBERIAS'],['R_09','SOPORTE DE EQUIPOS'],
+      ['R_10','PLANO SADEMA'],['R_11','TANQUE DE BOMBEO'],['R_12','TANQUE SURGE DRUM IQF Y RECUPERACION DE ACEITE'],
+      ['R_13','TANQUE RECIBIDOR'],['R_14','TANQUE TERMOSIFON'],['R_15','TANQUE DE GLICOL'],['R_16','TANQUE OIL POT'],
+      ['R_17','TANQUE ACUMULADOR DE SUCCION'],['R_18','ESQUEMA TECNICO RACK COMPRESORES'],['R_19','VENTILADORES PARA TUNELES'],
+      ['R_20','3D TUBERIAS'],['R_21','3D DE PAQUETES DE VALVULAS'],['R_22','3D SADEMA'],['R_23','3D TANQUES'],['R_24','3D DE EQUIPOS'],
+      ['R_25','CUADRO DE CARGAS TERMICAS'],['R_26','FICHA TECNICAS DE EQUIPOS'],['R_27','ESPECIFICACIONES TECNICAS DE REFRIGERACION'],
+      ['R_28','RELACION DE VALVULAS Y ACCESORIOS'],['R_29','COMPUTOS METRICOS'],['R_30','CUADRO DE BALANCE TERMICO Y SELECCIÓN EQUIPOS'],
+      ['R_31','CUADRO DE ESPESORES DE AISLAMIENTOS TUBERIAS Y TANQUES'],['R_32','CALCULO DE NH3 / GLICOL EN EL SISTEMA'],
+      ['R_33','INFORMACION TECNICA PARA TRAMITE LICENCIA NH3']
+    ]},
+    {cod:'IE',nombre:'INSTALACIONES ELECTRICAS',items:[
+      ['IE_01','CUADRO DE CARGAS ELECTRICAS'],['IE_02','FICHA TECNICA DE EQUIPOS'],['IE_03','UBICACIÓN DE TABLERO ELECTRICO FUERZA NH3'],
+      ['IE_04','UBICACIÓN TABLERO ELECTRICO CONTROL NH3'],['IE_05','UBICACIÓN TABLERO ELECTRICO FUERZA FREON'],['IE_06','RECORRIDO DE BANDEJAS ELECTRICAS'],
+      ['IE_07','ACOMETIDA TABLEROS ELECTRICOS'],['IE_08','ALIMENTACION A UC (UNID. CONDENS.)'],['IE_09','ALIMENTACIÓN DE MOTORES'],
+      ['IE_10','ALIMENTACIÓN DE BOBINAS'],['IE_11','DISTRIBUCIÓN DE SENSORES'],['IE_12','DISTRIBUCIÓN DE VISUALIZADORES'],
+      ['IE_13','DISTRIBUCIÓN DE CONTROL Y COMUNICACIÓN'],['IE_14','DISTRIBUCION DE NIVELADOR, ENCUESTO, PUERTA RAPIDA'],
+      ['IE_15','DISTRIBUCION DE VALVULA DE ALIVIO'],['IE_16','DISTRIBUCION DE DETECTORES DE NH3'],['IE_17','DISTRIBUCION DE EXTRACTORES DE AIRE'],
+      ['IE_18','DISTRIBUCION DE ENFRIADORES'],['IE_19','DISTRIBUCION DE HUMIFICADORES'],['IE_20','DISTRIBUCION DE GASIFICADO'],
+      ['IE_21','DISTRIBUCION DE BALANZA ELÉCTRONICA'],['IE_22','DISTRIBUCION DE LUMINARIAS'],['IE_23','ANALISIS DE ILUMINACIÓN'],
+      ['IE_24','ESQUEMA ELECTRICO FUERZA SADEMA'],['IE_25','ESQUEMA ELECTRICO CONTROL SADEMA'],['IE_26','ALIMENTACIÓN DE TERMOMETRIA'],
+      ['IE_27','SISTEMA DE TERMOMETRIA'],['IE_28','SISTEMA DE VACUOMETRO'],['IE_29','DIAGRAMA TRIFILAR ELECTRICO DE TABLEROS Y MOTORES'],
+      ['IE_30','DIAGRAMA UNIFILAR ELECTRICO'],['IE_31','VALVULAS EXPANSION ELECTRONICAS'],['IE_32','PLANO DE CVQ + EKC361'],
+      ['IE_33','DETALLES DE INSTALACION SIST. ELECT.'],['IE_34','DEFINICION ARRANQUE PORT A COOL']
+    ]}
+  ];
+  function planosDeTemplate(pryCode,respMap){respMap=respMap||{};var out=[];TEMPLATE_BLOQUES.forEach(function(b){var spe=BLOQUE_SPE[b.cod];var resp=respMap[b.cod]||null;b.items.forEach(function(it){out.push({id:pryCode+'-'+it[0],ti:it[1],spe:spe,est:resp?'pendiente':'backlog',av:0,resp:resp,proy:pryCode,bloque:b.cod})})});return out}
+  function pendientesConfirmar(){return planos.filter(function(p){return S.user&&p.resp===S.user.ini&&p.est==='pendiente'})}
+  function pendientesPanel(){
+    var items=pendientesConfirmar();if(!items.length)return '';
+    var porProy={};items.forEach(function(p){(porProy[p.proy]=porProy[p.proy]||[]).push(p)});
+    var grupos=Object.keys(porProy).map(function(pid){var proy=projOf(pid);
+      var rows=porProy[pid].map(function(p){return '<div class="confirm-row"><div class="confirm-info"><span class="spe '+speClass[p.spe]+'">'+p.spe+'</span><div style="min-width:0"><div style="font-size:12.5px;font-weight:600">'+p.id+'</div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.ti+'</div></div></div><div class="confirm-acts"><button class="btn sm good" data-planoconfirm="'+p.id+'|si">Sí</button><button class="btn sm crit" data-planoconfirm="'+p.id+'|no">No</button></div></div>'}).join('');
+      return '<div style="margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">'+proy.nm+'</div><div style="display:flex;flex-direction:column;gap:6px">'+rows+'</div></div>';
+    }).join('');
+    return '<div class="panelbox" style="background:var(--warn-soft);margin-bottom:16px"><div class="ph">'+ic('sheet')+'<h4>Nuevos planos por confirmar ('+items.length+')</h4></div><div style="font-size:11.5px;color:var(--ink-2);margin-bottom:10px">Indica si cada plano aplica a tu proyecto. Al marcar <b class="b">Sí</b> se crea un ticket automáticamente.</div><div style="max-height:320px;overflow-y:auto">'+grupos+'</div></div>';
+  }
+  function misConfirmaciones(){
+    if(!S.user)return [];
+    return tickets.filter(function(t){if(t.tipo!=='planos')return false;var proy=proyectos.filter(function(p){return p.id===t.proyId})[0];return proy&&proy.creadoPor===S.user.ini}).slice().reverse();
+  }
+  function confirmacionesPanel(){
+    var items=misConfirmaciones();
+    if(!items.length)return '';
+    var rows=items.slice(0,8).map(function(t){var ini=t.by;var plano=planos.filter(function(p){return p.id===t.planoId})[0];
+      return '<div class="confirm-row"><div class="confirm-info"><span class="avatar" style="width:24px;height:24px;font-size:9px;background:'+(AV[ini]||'#13277F')+'">'+ini+'</span><div style="min-width:0"><div style="font-size:12.5px;font-weight:600">'+(NAMES[ini]||ini)+' confirmó <span class="mono">'+t.planoId+'</span></div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(plano?plano.ti:'')+' · '+t.cliente+'</div></div></div><span class="chip teal" style="padding:1px 7px;font-size:9px;flex:none" data-open-ticket="'+t.id+'">'+t.id+'</span></div>'}).join('');
+    return '<div class="panelbox" style="margin-bottom:14px"><div class="ph">'+ic('chat')+'<h4>Confirmaciones de tu equipo</h4><span class="more">'+items.length+'</span></div><div style="font-size:11.5px;color:var(--ink-2);margin-bottom:10px">Se sincroniza en vivo cuando un ingeniero confirma un plano de un proyecto que creaste.</div><div style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto">'+rows+'</div></div>';
+  }
+  var BLOQUE_TEAM={PA:['LC','DN','JV'],PP:['SS','PC'],PC:['LC','DN','JV'],EM:['LC','DN','JV'],PR:['EL','AT','YD'],IE:['CA','JO','PY','AN']};
+  var BLOQUE_COLOR={PA:'#8B5CF6',PP:'#EA580C',PC:'#2563EB',EM:'#13277F',PR:'#0FA896',IE:'#F59E0B'};
+  var PUESTO={EL:'Analista',AT:'Analista',YD:'Asistente',SS:'Analista',PC:'Asistente',LC:'Analista',DN:'Asistente',JV:'Asistente',CA:'Analista',JO:'Asistente',PY:'Analista',AN:'Diseñador',JP:'Analista',SF:'Asistente',MH:'Asistente',GP:'Planner',PZ:'Gerente'};
+  function bloqueSelectorHTML(){
+    return TEMPLATE_BLOQUES.map(function(b){
+      var col=BLOQUE_COLOR[b.cod];var open=S.form.openBloque===b.cod;var respIni=S.form.resp[b.cod];
+      var chip='<button class="bloque-chip'+(open?' open':'')+'" data-bloque="'+b.cod+'" style="--bc:'+col+'"><span class="bloque-cod">'+b.cod+'</span><span class="bloque-nm">'+b.nombre+'<span class="bloque-ct">'+b.items.length+' planos</span></span>'+
+        (respIni?'<span class="avatar" style="width:22px;height:22px;font-size:9px;background:'+(AV[respIni]||col)+'">'+respIni+'</span>':'<span class="bloque-unassigned">Sin asignar</span>')+
+        '<svg class="icn sm" viewBox="0 0 24 24" style="transform:rotate('+(open?'180':'0')+'deg)"><path d="m6 9 6 6 6-6"/></svg></button>';
+      var people=BLOQUE_TEAM[b.cod]||[];
+      var panel=open?('<div class="bloque-people">'+(people.length?people.map(function(ini){var m=team.filter(function(x){return x.ini===ini})[0];var nm=(m&&m.nm)||NAMES[ini]||ini;var sel=respIni===ini;
+        return '<button class="pick'+(sel?' sel':'')+'" data-bloqueperson="'+b.cod+'|'+ini+'"><span class="avatar" style="width:24px;height:24px;font-size:9px;background:'+(AV[ini]||col)+'">'+ini+'</span><div><div style="font-size:12.5px;font-weight:600">'+nm+'</div><div style="font-size:10.5px;color:var(--muted)">'+(PUESTO[ini]||'')+'</div></div>'+(sel?'<span class="ld" style="color:var(--teal-ink)">Quitar ✕</span>':'')+'</button>'}).join(''):'<div style="font-size:12px;color:var(--muted);padding:6px 2px">Sin equipo asignado a este bloque todavía.</div>')+'</div>'):'';
+      return '<div class="bloque-row">'+chip+panel+'</div>';
+    }).join('');
+  }
+  var EQUIPO={EL:'Refrigeración',AT:'Refrigeración',YD:'Refrigeración',SS:'Paneles',PC:'Paneles',LC:'Estructura y Civil',DN:'Estructura y Civil',JV:'Estructura y Civil',CA:'Eléctrica',JO:'Eléctrica',PY:'Eléctrica',AN:'Eléctrica',JP:'Presupuestos',SF:'Presupuestos',MH:'Presupuestos',GP:'Gestión'};
   var team=[{ini:'AR',nm:'Ana Rivas',spe:'REF',load:142},{ini:'LM',nm:'Luis Medrano',spe:'EST',load:55},{ini:'DC',nm:'Diego Castro',spe:'INST',load:88},{ini:'MP',nm:'María Ponce',spe:'CIV',load:97}];
   var users=[
     {ini:'AR',nm:'Ana Rivas',mail:'arivas@friopacking.com',role:'ingeniero',spe:'REF'},
@@ -632,12 +744,13 @@
   var SCREENS={};
 
   SCREENS['mi-dia']=function(){
-    var mine=myPlanos();
+    var mine=myPlanos().filter(function(p){return p.est!=='pendiente'});
     var late=mine.filter(function(p){return p.late}).length;
     var rev=mine.filter(function(p){return p.est==='revision'}).length;
     var tl=mine.slice(0,5).map(function(p){var tag=p.est==='aprobado'?'good':(p.late?'crit':(p.est==='revision'?'warn':'blue'));var tagt=p.est==='aprobado'?'Aprobado':(p.late?'Retrasado 1d':(p.est==='revision'?'En revisión':(p.av>0?p.av+'%':'Por iniciar')));
       return '<div class="task'+(p.est==='aprobado'?' done':'')+'" data-open="'+p.id+'"><span class="ck'+(p.est==='aprobado'?' on':'')+'"></span><div class="tt"><span class="cd">'+p.id+'</span><br>'+p.ti+'</div><div class="rt"><span class="chip '+tag+'">'+(tag==='crit'?'<span class="dot crit"></span>':'')+tagt+'</span></div></div>'}).join('')||'<div class="muted" style="font-size:13px">No tienes entregables asignados.</div>';
     return '<div class="secttitle">Buenos días, '+S.user.nm.split(' ')[0]+'</div><div class="sectsub">Martes 5 de agosto · '+(late?'<b class="b" style="color:var(--crit)">'+late+' urgente'+(late>1?'s':'')+'</b> · ':'')+mine.length+' entregables asignados</div>'+
+    pendientesPanel()+
     '<div class="kpi4" style="margin-bottom:16px">'+
       kpi('good','Capacidad hoy','3.5<span style="font-size:14px;color:var(--muted)"> / 8h</span>','4.5h libres','up')+
       kpi('crit','Retrasados',''+late,'requieren acción','down',true,'planos')+
@@ -689,7 +802,8 @@
         var late=p.late?' <span class="chip crit" style="padding:0 5px;font-size:9px">−1d</span>':'';
         var projTag=ing?'<div style="font-size:9.5px;color:var(--faint);margin:1px 0 3px">'+projOf(p.proy).nm+'</div>':'';
         var help=p.help?' <span class="chip warn" style="padding:0 5px;font-size:9px">apoyo</span>':'';
-        return '<div class="pcard" data-open="'+p.id+'"'+(p.late?' style="border-color:var(--crit)"':'')+'><div class="cd">'+p.id+late+help+'</div>'+projTag+'<div class="ti">'+p.ti+'</div><div class="ft"><span class="spe '+speClass[p.spe]+'">'+p.spe+'</span>'+pill+'<span class="avatar" style="width:20px;height:20px;font-size:9px;background:'+AV[p.resp]+';margin-left:auto">'+p.resp+'</span></div></div>';
+        var respTag=p.resp?'<span class="avatar" style="width:20px;height:20px;font-size:9px;background:'+AV[p.resp]+';margin-left:auto">'+p.resp+'</span>':'<span style="margin-left:auto;font-size:9.5px;color:var(--faint);font-style:italic">Sin asignar</span>';
+        return '<div class="pcard" data-open="'+p.id+'"'+(p.late?' style="border-color:var(--crit)"':'')+'><div class="cd">'+p.id+late+help+'</div>'+projTag+'<div class="ti">'+p.ti+'</div><div class="ft"><span class="spe '+speClass[p.spe]+'">'+p.spe+'</span>'+pill+respTag+'</div></div>';
       }).join('')||'<div style="font-size:11.5px;color:var(--faint);padding:6px 2px">—</div>';
       return '<div><div class="col-h"><span class="'+c[2]+'"></span>'+c[1]+' <span class="cnt">'+items.length+'</span></div>'+cards+'</div>';
     }).join('');
@@ -766,7 +880,7 @@
   };
   SCREENS['proyectos']=function(){
     var list=proyectos.filter(function(p){return !S.cliente||p.cli===S.cliente});
-    var bc='<div class="breadcrumb"><button data-screen="clientes">Clientes</button>'+(S.cliente?'<span class="sep">/</span><span class="cur">'+cliOf(S.cliente).nm+'</span>':'<span class="sep">/</span><span class="cur">Todos</span>')+'</div>';
+    var bc='<div class="breadcrumb"><button data-screen="clientes">Clientes</button>'+(S.cliente?'<span class="sep">/</span><span class="cur">'+cliOf(S.cliente).nm+'</span>':'<span class="sep">/</span><span class="cur">Todos</span>')+'<button class="btn pri" id="newProyecto" style="margin-left:auto"><svg class="icn sm" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg> Nuevo proyecto</button></div>';
     var cards=list.map(function(p){var ent=planos.filter(function(x){return x.proy===p.id}).length;
       return '<button class="entity" data-proyecto="'+p.id+'"><span class="ava" style="background:var(--panel-2);color:var(--blue-ink)">'+ic('folder')+'</span><div><div class="nm">'+p.nm+'</div><div class="sub">'+cliOf(p.cli).nm+' · '+ent+' entregables</div></div><div class="rt"><span class="chip '+p.estado+'"><span class="dot '+p.estado+'"></span>salud '+p.salud+'</span><div style="font-size:10px;color:var(--muted);margin-top:4px">avance '+projAv(p.id)+'%</div></div></button>'}).join('');
     return '<div class="secttitle">Proyectos</div><div class="sectsub">Cada proyecto agrupa sus entregables (planos)</div>'+bc+'<div class="cards3">'+cards+'</div>';
@@ -780,6 +894,7 @@
       kpi('warn','Sobrecargados','3','&gt;120% cap.','',true,'carga')+
       kpi('blue','Cumplimiento planos','91%','▲ 2 pts','up',true,'planos',spark('var(--blue)','0,22 12,20 24,16 36,17 48,12 66,9'))+
     '</div>'+
+    confirmacionesPanel()+
     '<div class="grid2" style="margin-bottom:14px">'+
       '<div class="panelbox"><div class="ph">'+ic('risk')+'<h4>Proyectos en riesgo — con driver</h4><button class="more" data-screen="proyectos">Ver todos</button></div>'+
         riskrow('crit','chincha2','Planta Frío Chincha II','Cuello: <b class="b" style="color:var(--warn)">Instrumentación</b> · 3 planos bloqueando 6','54')+
@@ -1030,7 +1145,7 @@
         '<div class="avance-seg">'+presets.map(function(v){return '<button data-av="'+v+'" class="'+(cur===v?'on':'')+'">'+v+'%</button>'}).join('')+'</div>'+
         '<div class="avnote">El <b class="b">responsable</b> actualiza el avance según lo ejecutado en obra/gabinete. Al enviarse a revisión y aprobarse, pasa a 100%.</div></div>'+
         '<div class="info-sec"><div class="t">Ficha del entregable</div>'+
-          '<div class="info-row"><span class="k">Responsable</span><span class="v"><span class="avatar" style="width:18px;height:18px;font-size:8px;background:'+AV[p.resp]+'">'+p.resp+'</span> '+(NAMES[p.resp]||p.resp)+(S.role==='gerente'?' <button class="chip" data-reassign="'+p.id+'" style="cursor:pointer">Cambiar</button>':'')+'</span></div>'+
+          '<div class="info-row"><span class="k">Responsable</span><span class="v">'+(p.resp?'<span class="avatar" style="width:18px;height:18px;font-size:8px;background:'+AV[p.resp]+'">'+p.resp+'</span> '+(NAMES[p.resp]||p.resp):'<span style="color:var(--faint);font-style:italic">Sin asignar</span>')+(S.role==='gerente'?' <button class="chip" data-reassign="'+p.id+'" style="cursor:pointer">'+(p.resp?'Cambiar':'Asignar')+'</button>':'')+'</span></div>'+
           '<div class="info-row"><span class="k">Supervisa / aprueba</span><span class="v">R. Guerra</span></div>'+
           '<div class="info-row"><span class="k">Especialidad</span><span class="v"><span class="spe '+speClass[p.spe]+'">'+p.spe+'</span> '+SPE[p.spe]+'</span></div>'+
           '<div class="info-row"><span class="k">Prioridad</span><span class="v">'+(p.prio||'P2')+'</span></div>'+
@@ -1102,6 +1217,12 @@
   function closeFull(){$('#fullScrim').classList.remove('open')}
   function applyZoom(){var el=$('#fullsheet');if(el)el.style.transform='scale('+S.zoom+')';var z=$('#zlbl');if(z)z.textContent=Math.round((S.zoom||1)*100)+'%'}
 
+  function openModalNewProyecto(){S.form={mode:'newproy',resp:{},openBloque:null};
+    var co=clientes.map(function(c){return '<option value="'+c.id+'"'+(S.cliente===c.id?' selected':'')+'>'+c.nm+'</option>'}).join('');
+    var total=TEMPLATE_BLOQUES.reduce(function(a,b){return a+b.items.length},0);
+    $('#modalRoot').innerHTML='<div class="mh"><svg class="icn" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg><h3>Nuevo proyecto</h3><button class="x" data-mclose><svg class="icn sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="mb"><div class="field-l">Nombre del proyecto</div><input class="inp" id="fProyNombre" placeholder="Ej. Planta Frío Ica"><div class="field-l">Código PRY</div><input class="inp" id="fProyCodigo" placeholder="Ej. PRY-048"><div class="field-l">Cliente</div><select class="inp" id="fProyCliente">'+co+'</select><div class="field-l" style="margin-top:14px">Se generarán automáticamente '+total+' entregables en '+TEMPLATE_BLOQUES.length+' bloques — toca un bloque para asignar responsable</div><div id="bloqueSelector">'+bloqueSelectorHTML()+'</div></div><div class="mf"><button class="btn gho" data-mclose>Cancelar</button><button class="btn pri" id="fCreateProy">Crear proyecto</button></div>';
+    $('#modalScrim').classList.add('open');
+  }
   function openModalNew(){S.form={mode:'new',resp:null};var so=Object.keys(SPE).map(function(k){return '<option value="'+k+'">'+SPE[k]+'</option>'}).join('');
     $('#modalRoot').innerHTML='<div class="mh"><svg class="icn" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg><h3>Nuevo entregable</h3><button class="x" data-mclose><svg class="icn sm" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="mb"><div class="field-l">Nombre del entregable</div><input class="inp" id="fNombre" placeholder="Ej. Isométrico de tuberías NH₃"><div class="field-l">Especialidad</div><select class="inp" id="fSpeNew">'+so+'</select><div class="field-l">Responsable — <span style="text-transform:none;font-weight:500;color:var(--faint)">así se asigna el plano</span></div>'+personPicker(null)+'<div class="field-l">Formato admitido</div><div class="rowgap"><span class="fmt pdf">PDF</span><span class="fmt dwg">DWG · AutoCAD</span><span class="fmt rvt">RVT · Revit</span></div></div><div class="mf"><button class="btn gho" data-mclose>Cancelar</button><button class="btn pri" id="fCreate">Crear y asignar</button></div>';
     $('#modalScrim').classList.add('open');
@@ -1122,10 +1243,10 @@
   function go(scr){if(!scr)return;S.screen=scr;S.fSpe='';S.fResp='';S.fProj='';sidebar.classList.remove('open');render()}
 
   // ---- LOGIN ----
-  function renderLoginUsers(){$('#loginUsers').innerHTML=users.map(function(u){return '<button class="du" data-login="'+u.ini+'"><span class="avatar" style="width:26px;height:26px;font-size:9px;background:'+(AV[u.ini]||'#13277F')+'">'+u.ini+'</span><div><div style="font-size:12.5px;font-weight:600">'+u.nm+'</div><div style="font-size:10.5px;color:var(--muted)">'+u.mail+'</div></div><span class="rl">'+({gerente:'Gerente',presupuestador:'Presupuestos',comercial:'Comercial',ingeniero:'Ingeniero'}[u.role])+'</span></button>'}).join('')}
+  function renderLoginUsers(){$('#loginUsers').innerHTML=users.map(function(u){var lbl=EQUIPO[u.ini]||({gerente:'Gerente',presupuestador:'Presupuestos',comercial:'Comercial',ingeniero:'Ingeniero'}[u.role]);return '<button class="du" data-login="'+u.ini+'"><span class="avatar" style="width:26px;height:26px;font-size:9px;background:'+(AV[u.ini]||'#13277F')+'">'+u.ini+'</span><div><div style="font-size:12.5px;font-weight:600">'+u.nm+'</div><div style="font-size:10.5px;color:var(--muted)">'+u.mail+'</div></div><span class="rl">'+lbl+'</span></button>'}).join('')}
   function doLogin(ini){var u=users.filter(function(x){return x.ini===ini})[0];if(!u)return;S.user=u;S.role=u.role;S.screen={gerente:'dashboard',presupuestador:'presupuestos',comercial:'tickets',ingeniero:'mi-dia'}[u.role];S.cliente=null;S.proyecto='chincha2';S.cotiz=null;$('#loginScrim').classList.remove('open');renderUserChip();render();toast('Bienvenida, '+u.nm.split(' ')[0])}
   function logout(){S.active=null;S.user=null;$('#userMenu').classList.remove('open');closeDetail();$('#loginScrim').classList.add('open')}
-  function renderUserChip(){if(!S.user)return;$('#userBtn').innerHTML='<span class="avatar" style="width:26px;height:26px;font-size:9px;background:'+(AV[S.user.ini]||'#13277F')+'">'+S.user.ini+'</span><div style="text-align:left"><div class="nm">'+S.user.nm+'</div><div class="rol">'+({gerente:'Gerente de Ingeniería',presupuestador:'Presupuestos',comercial:'Ejecutivo Comercial'}[S.role]||('Ingeniero · '+SPE[S.user.spe]))+'</div></div><svg class="icn sm" viewBox="0 0 24 24" style="color:var(--muted)"><path d="m6 9 6 6 6-6"/></svg>'}
+  function renderUserChip(){if(!S.user)return;var rolLbl=EQUIPO[S.user.ini]||({gerente:'Gerente de Ingeniería',presupuestador:'Presupuestos',comercial:'Ejecutivo Comercial'}[S.role]||('Ingeniero · '+SPE[S.user.spe]));$('#userBtn').innerHTML='<span class="avatar" style="width:26px;height:26px;font-size:9px;background:'+(AV[S.user.ini]||'#13277F')+'">'+S.user.ini+'</span><div style="text-align:left"><div class="nm">'+S.user.nm+'</div><div class="rol">'+rolLbl+'</div></div><svg class="icn sm" viewBox="0 0 24 24" style="color:var(--muted)"><path d="m6 9 6 6 6-6"/></svg>'}
 
   function toast(msg){var t=document.createElement('div');t.className='toast';t.innerHTML='<span class="ic"><svg class="icn sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>'+msg;$('#toasts').appendChild(t);setTimeout(function(){t.style.opacity='0';t.style.transition='.3s';setTimeout(function(){t.remove()},300)},2200)}
 
@@ -1199,6 +1320,38 @@
       return}
     if(t.closest('[data-upload]')){toast('Formatos aceptados: PDF, DWG (AutoCAD), RVT (Revit)');return}
     if(t.closest('#newPlano')){openModalNew();return}
+    if(t.closest('#newProyecto')){openModalNewProyecto();return}
+    var pconf=t.closest('[data-planoconfirm]'); if(pconf){var parts0=pconf.getAttribute('data-planoconfirm').split('|');var pid0=parts0[0],dec=parts0[1];var p0=planos.filter(function(x){return x.id===pid0})[0];if(!p0)return;
+      if(dec==='si'){
+        p0.est='backlog';
+        if(sb)sbW(sb.from('planos').update({estado:'backlog'}).eq('id',p0.id));
+        var proy0=projOf(p0.proy),cli0=cliOf(proy0.cli);
+        var ntk='TK-'+Date.now().toString().slice(-6)+Math.floor(Math.random()*90+10);
+        var tk0={id:ntk,cliente:cli0.nm,proy:proy0.nm+' · '+p0.id,tipo:'planos',estado:'nuevo',refrig:'NH3',by:S.user.ini,fecha:'hoy',cotiz:null,proyId:p0.proy,bloque:p0.bloque,planoId:p0.id};
+        tickets.push(tk0);
+        if(sb)sbW(sb.from('tickets').insert({id:ntk,cliente:tk0.cliente,proyecto:tk0.proy,tipo:tk0.tipo,estado:'nuevo',refrigerante:tk0.refrig,creado_por:tk0.by,proyecto_id:tk0.proyId,bloque:tk0.bloque}));
+        toast(p0.id+' confirmado ✓ — ticket '+ntk+' creado');
+      } else {
+        p0.est='descartado';
+        if(sb)sbW(sb.from('planos').update({estado:'descartado'}).eq('id',p0.id));
+        toast(p0.id+' marcado como no aplica');
+      }
+      render();return}
+    var bloqueBtn=t.closest('[data-bloque]'); if(bloqueBtn&&S.form&&S.form.mode==='newproy'){var bc2=bloqueBtn.getAttribute('data-bloque');S.form.openBloque=(S.form.openBloque===bc2?null:bc2);$('#bloqueSelector').innerHTML=bloqueSelectorHTML();return}
+    var bp=t.closest('[data-bloqueperson]'); if(bp&&S.form&&S.form.mode==='newproy'){var parts=bp.getAttribute('data-bloqueperson').split('|');var bcod=parts[0],pini=parts[1];
+      if(S.form.resp[bcod]===pini)delete S.form.resp[bcod];else S.form.resp[bcod]=pini;
+      S.form.openBloque=null;$('#bloqueSelector').innerHTML=bloqueSelectorHTML();return}
+    if(t.closest('#fCreateProy')){
+      var pnm=($('#fProyNombre').value||'').trim();var pcod=($('#fProyCodigo').value||'').trim().toUpperCase();var pcli=$('#fProyCliente').value;
+      if(!pnm){toast('Escribe el nombre del proyecto');return}
+      if(!pcod){toast('Escribe el código PRY');return}
+      if(proyectos.some(function(p){return p.id===pcod})){toast('Ese código PRY ya existe');return}
+      var nuevoProy={id:pcod,nm:pnm,cli:pcli,salud:100,estado:'good',creadoPor:S.user.ini};
+      var nuevosPlanos=planosDeTemplate(pcod,S.form.resp);
+      proyectos.push(nuevoProy);planos=planos.concat(nuevosPlanos);
+      if(sb){sbW(sb.from('proyectos').insert({id:pcod,nombre:pnm,cliente_id:pcli,salud:100,estado:'good',creado_por:S.user.ini}));sbW(sb.from('planos').insert(nuevosPlanos.map(function(p){return {id:p.id,titulo:p.ti,especialidad:p.spe,estado:p.est,avance:p.av,responsable:p.resp,proyecto_id:p.proy}})))}
+      closeModal();S.cliente=pcli;S.proyecto=pcod;go('proyectos');toast(pcod+' creado con '+nuevosPlanos.length+' entregables');return
+    }
     var pick=t.closest('[data-pick]'); if(pick){if(S.form){S.form.resp=pick.getAttribute('data-pick');[].forEach.call(document.querySelectorAll('#modalRoot .pick'),function(b){b.classList.toggle('sel',b===pick)})}return}
     if(t.closest('[data-mclose]')||t.id==='modalScrim'){closeModal();return}
     if(t.closest('#fCreate')){if(!S.form.resp){toast('Elige un responsable');return}var spe=$('#fSpeNew').value;var nm=($('#fNombre').value||'Nuevo entregable');var code='RF-'+spe+'-'+Date.now().toString().slice(-4);planos.push({id:code,ti:nm,spe:spe,est:'backlog',av:0,resp:S.form.resp,proy:S.proyecto});if(sb)sbW(sb.from('planos').insert({id:code,titulo:nm,especialidad:spe,estado:'backlog',avance:0,responsable:S.form.resp,proyecto_id:S.proyecto}));closeModal();S.screen='planos';render();toast(code+' asignado a '+NAMES[S.form.resp]);return}
